@@ -1,0 +1,3 @@
+py-synologydsm-api
+fastapi
+uvicorn
