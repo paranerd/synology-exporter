@@ -170,7 +170,7 @@ async def probe(target):
 
   try:
     targets = get_targets()
-    target_info = list(filter(lambda t: t['host'] == target, targets))
+    target_info = list(filter(lambda t: t['host'] == target, targets))[0]
     api = SynologyDSM(target_info['host'], target_info['port'], target_info['username'], target_info['password'], device_token=target_info['device_token'])
 
     # Update info
