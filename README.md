@@ -27,6 +27,11 @@ services:
       ./targets.json:/app/targets.json
 ```
 
+## Add new host
+```
+docker exec -v "./targets.json:/app/targets.json" paranerd/synology-exporter python3 /app/main.py add
+```
+
 ## Query metrics
 ```
 curl "<server_ip>:9102/probe?target=<synology_url>
