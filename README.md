@@ -24,7 +24,7 @@ services:
     ports:
       - 9102:80
     volumes:
-      ./targets.json:/app/targets.json
+      - ./targets.json:/app/targets.json
 ```
 
 ## Add new host
