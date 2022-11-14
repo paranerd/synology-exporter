@@ -11,7 +11,7 @@ Make sure the `targets.json` you're mounting already exists (otherwise Docker wi
 
 ## Run with Docker Run
 ```
-docker run -d -p 9102:80 -v "./targets.json:/app/targets.json" --name synology-exporter paranerd/synology-exporter
+docker run -d -p 9102:80 -v "/path/to/targets.json:/app/targets.json" --name synology-exporter paranerd/synology-exporter
 ```
 
 ## Run with Docker Compose
@@ -26,12 +26,12 @@ services:
     ports:
       - 9102:80
     volumes:
-      - ./targets.json:/app/targets.json
+      - /path/to/targets.json:/app/targets.json
 ```
 
 ## Add new host
 ```
-docker exec -v "./targets.json:/app/targets.json" paranerd/synology-exporter python3 /app/main.py add
+docker exec -it synology-exporter python3 /app/main.py add
 ```
 
 ## Query metrics
