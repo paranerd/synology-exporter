@@ -186,7 +186,6 @@ async def probe(target):
     return metrics
 
 if __name__ == '__main__':
-  '''
   # Parse arguments
   parser = argparse.ArgumentParser()
   parser.add_argument('action', type=str)
@@ -194,6 +193,3 @@ if __name__ == '__main__':
 
   if args.action == 'add':
     add_host()
-  '''
-
-  print(get_targets())
