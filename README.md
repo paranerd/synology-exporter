@@ -6,13 +6,15 @@
 
 Prometheus exporter for Synology NAS
 
+## Prerequisites
+Make sure the `targets.json` you're mounting already exists (otherwise Docker will create it as a directory)!
+
 ## Run with Docker Run
 ```
-docker run -d -p 9101:80 --name synology-exporter paranerd/synology-exporter
+docker run -d -p 9102:80 -v "./targets.json:/app/targets.json" --name synology-exporter paranerd/synology-exporter
 ```
 
 ## Run with Docker Compose
-
 ```
 ---
 version: '3'
