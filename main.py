@@ -16,12 +16,15 @@ def get_targets():
   """Get targets from disk."""
   path = Path(TARGETS_PATH)
 
+  # Only parse file if exists and non-empty
   if path.is_file():
     with open(TARGETS_PATH) as f:
-      d = json.load(f)
-      return d
-  else:
-    return {}
+      f.seek(0)
+      if f.read(1):
+        f.seek(0)
+        return json.load(f)
+  
+  return []
 
 def write_targets(targets):
   """Write targets to disk."""
@@ -183,6 +186,7 @@ async def probe(target):
     return metrics
 
 if __name__ == '__main__':
+  '''
   # Parse arguments
   parser = argparse.ArgumentParser()
   parser.add_argument('action', type=str)
@@ -190,3 +194,6 @@ if __name__ == '__main__':
 
   if args.action == 'add':
     add_host()
+  '''
+
+  print(get_targets())
