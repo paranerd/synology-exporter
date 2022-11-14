@@ -61,7 +61,10 @@ def add_host():
   }
 
   targets = get_targets()
-  targets[host] = target
+
+  # Remove existing host (if exists)
+  targets = [t for t in targets if not (t.get('host') != host)]
+  targets.append(target)
 
   write_targets(targets)
 
