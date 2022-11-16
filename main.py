@@ -75,6 +75,12 @@ def get_nas_info(api: SynologyDSM):
   return ('# HELP synology_dsm_version_info DSM version\n'
           '# TYPE synology_dsm_version_info gauge\n'
           f'''dsm_version_info{{"version={api.information.version_string}"}} 1\n'''
+          '# HELP synology_update_available If a DSM update is available\n'
+          '# TYPE synology_update_available gauge\n'
+          f'''synology_update_available {api.upgrade.update_available}\n'''
+          '# HELP synology_available_version Which version is available for update\n'
+          '# TYPE synology_available_version gauge\n'
+          f'''synology_available_version {api.upgrade.available_version}\n'''
           '# HELP synology_temperature NAS Temperature in degrees celsius\n'
           '# TYPE synology_temperature gauge\n'
           f'''synology_temperature {api.information.temperature}\n'''
@@ -96,9 +102,6 @@ def get_nas_info(api: SynologyDSM):
           '# HELP synology_network_down_bytes Network traffic download in bytes\n'
           '# TYPE synology_network_down_bytes gauge\n'
           f'''synology_network_down_bytes {api.utilisation.network_down()}\n'''
-          '# HELP synology_success Displays whether or not the probe was a success\n'
-          '# TYPE synology_success gauge\n'
-          f'''synology_success 1\n'''
   )
 
 def get_volume_info(api: SynologyDSM):
@@ -177,6 +180,7 @@ async def probe(target):
     api.information.update()
     api.utilisation.update()
     api.storage.update()
+    api.upgrade.update()
 
     metrics = get_nas_info(api)
     metrics += get_volume_info(api)
