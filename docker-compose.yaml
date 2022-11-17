@@ -8,4 +8,4 @@ services:
     ports:
       - 9102:80
     volumes:
-      ./targets.json:/app/targets.json
+      - /path/to/targets.json:/app/targets.json
