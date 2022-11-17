@@ -74,7 +74,7 @@ def get_nas_info(api: SynologyDSM):
   """Get general NAS info."""
   return ('# HELP synology_dsm_version_info DSM version\n'
           '# TYPE synology_dsm_version_info gauge\n'
-          f'''dsm_version_info{{version="{api.information.version_string}"}} 1\n'''
+          f'''synology_dsm_version_info{{version="{api.information.version_string}"}} 1\n'''
           '# HELP synology_update_available If a DSM update is available\n'
           '# TYPE synology_update_available gauge\n'
           f'''synology_update_available {1 if api.upgrade.update_available else 0}\n'''
