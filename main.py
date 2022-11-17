@@ -23,7 +23,7 @@ def get_targets():
       if f.read(1):
         f.seek(0)
         return json.load(f)
-  
+
   return []
 
 def write_targets(targets):
@@ -96,12 +96,10 @@ def get_nas_info(api: SynologyDSM):
           '# HELP synology_memory_usage Memory usage in percent\n'
           '# TYPE synology_memory_usage gauge\n'
           f'''synology_memory_usage {api.utilisation.memory_real_usage}\n'''
-          '# HELP synology_network_up_bytes Network traffic upload in bytes\n'
-          '# TYPE synology_network_up_bytes gauge\n'
-          f'''synology_network_up_bytes {api.utilisation.network_up()}\n'''
-          '# HELP synology_network_down_bytes Network traffic download in bytes\n'
-          '# TYPE synology_network_down_bytes gauge\n'
-          f'''synology_network_down_bytes {api.utilisation.network_down()}\n'''
+          '# HELP synology_network_bytes Network traffic in bytes\n'
+          '# TYPE synology_network_bytes gauge\n'
+          f'''synology_network_bytes{{direction="up"}} {api.utilisation.network_up()}\n'''
+          f'''synology_network_bytes{{direction="down"}} {api.utilisation.network_down()}\n'''
   )
 
 def get_volume_info(api: SynologyDSM):
