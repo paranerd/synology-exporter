@@ -86,7 +86,7 @@ def get_nas_info(api: SynologyDSM):
           f'''synology_temperature {api.information.temperature}\n'''
           '# HELP synology_temperature_warning If NAS has temperature warning\n'
           '# TYPE synology_temperature_warning gauge\n'
-          f'''synology_temperature_warning {api.information.temperature_warn}\n'''
+          f'''synology_temperature_warning {1 if api.information.temperature_warn else 0}\n'''
           '# HELP synology_uptime Uptime\n'
           '# TYPE synology_uptime gauge\n'
           f'''synology_uptime {api.information.uptime}\n'''
