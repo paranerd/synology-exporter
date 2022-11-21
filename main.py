@@ -92,7 +92,10 @@ def get_nas_info(api: SynologyDSM):
           f'''synology_uptime {api.information.uptime}\n'''
           '# HELP synology_cpu_load CPU load in percent\n'
           '# TYPE synology_cpu_load gauge\n'
-          f'''synology_cpu_load {api.utilisation.cpu_total_load}\n'''
+          f'''synology_cpu_load{{type="user"}} {api.utilisation.cpu_user_load}\n'''
+          f'''synology_cpu_load{{type="system"}} {api.utilisation.cpu_system_load}\n'''
+          f'''synology_cpu_load{{type="other"}} {api.utilisation.cpu_other_load}\n'''
+          f'''synology_cpu_load{{type="total"}} {api.utilisation.cpu_total_load}\n'''
           '# HELP synology_memory_usage Memory usage in percent\n'
           '# TYPE synology_memory_usage gauge\n'
           f'''synology_memory_usage {api.utilisation.memory_real_usage}\n'''
@@ -191,10 +194,25 @@ async def probe(target):
     return metrics
 
 if __name__ == '__main__':
-  # Parse arguments
+  '''# Parse arguments
   parser = argparse.ArgumentParser()
   parser.add_argument('action', type=str)
   args, _ = parser.parse_known_args()
 
   if args.action == 'add':
     add_host()
+
+  '''
+
+  target = '192.168.1.30'
+  targets = get_targets()
+  target_info = list(filter(lambda t: t['host'] == target, targets))[0]
+  api = SynologyDSM(target_info['host'], target_info['port'], target_info['username'], target_info['password'], device_token=target_info['device_token'])
+
+  api.utilisation.update()
+
+  print(api.utilisation.cpu)
+  print(api.utilisation.cpu_user_load)
+  print(api.utilisation.cpu_system_load)
+  print(api.utilisation.cpu_other_load)
+  print(api.utilisation.cpu_total_load)
