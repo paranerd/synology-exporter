@@ -2,7 +2,7 @@
 
 [![build](https://github.com/paranerd/synology-exporter/actions/workflows/main.yml/badge.svg)](https://github.com/paranerd/synology-exporter/actions/workflows/main.yml)
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/paranerd/synology-exporter?label=Current%20Version&logo=github)](https://github.com/paranerd/synology-exporter/tags)
-[![Docker Image Size (latest semver)](https://shields.api-test.nl:/docker/image-size/paranerd/synology-exporter?label=Image%20Size&logo=docker)](https://hub.docker.com/repository/docker/paranerd/synology-exporter)
+[![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/paranerd/synology-exporter?logo=docker&label=Image%20Size)](https://hub.docker.com/r/paranerd/synology-exporter)
 
 Prometheus exporter for Synology NAS
 
