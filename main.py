@@ -1,6 +1,8 @@
 import argparse
 import json
 from pathlib import Path
+import asyncio
+import aiohttp
 
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
@@ -31,7 +33,7 @@ def write_targets(targets):
   with open(TARGETS_PATH, 'w') as f:
     json.dump(targets, f)
 
-def add_host():
+async def add_host():
   """Add host to targets."""
   host = input('Host: ')
   port = input('Port [5000]: ') or 5000
@@ -39,18 +41,21 @@ def add_host():
   password = input('Password: ')
   otp_code = None
 
-  api = SynologyDSM(host, port, username, password)
+  async with aiohttp.ClientSession(
+        connector=aiohttp.TCPConnector(ssl=False)
+    ) as session:
+    api = SynologyDSM(host, port, username, password)
 
-  # Check if we need 2FA-Code
-  while True:
-    try:
-      api.login(otp_code)
-      break
-    except SynologyDSMLogin2SARequiredException:
-      otp_code = input('2FA code: ') or None
-    except SynologyDSMLogin2SAFailedException:
-      print('Wrong code. Please try again!')
-      otp_code = input('2FA code: ') or None
+    # Check if we need 2FA-Code
+    while True:
+      try:
+        await api.login(otp_code)
+        break
+      except SynologyDSMLogin2SARequiredException:
+        otp_code = input('2FA code: ') or None
+      except SynologyDSMLogin2SAFailedException:
+        print('Wrong code. Please try again!')
+        otp_code = input('2FA code: ') or None
 
   target = {
     'host': host,
@@ -175,20 +180,35 @@ async def probe(target):
   try:
     targets = get_targets()
     target_info = list(filter(lambda t: t['host'] == target, targets))[0]
-    api = SynologyDSM(target_info['host'], target_info['port'], target_info['username'], target_info['password'], device_token=target_info['device_token'])
 
-    # Update info
-    api.information.update()
-    api.utilisation.update()
-    api.storage.update()
-    api.upgrade.update()
+    async with aiohttp.ClientSession(
+        connector=aiohttp.TCPConnector(verify_ssl=False)
+    ) as session:
+      api = SynologyDSM(session, target_info['host'], target_info['port'], target_info['username'], target_info['password'], device_token=target_info['device_token'])
 
-    metrics = get_nas_info(api)
-    metrics += get_volume_info(api)
-    metrics += get_disk_info(api)
-    metrics += get_success_info(True)
+      await login()
+
+      # Update info
+      await api.information.update()
+      await api.utilisation.update()
+      await api.storage.update()
+      await api.upgrade.update()
+
+      metrics = get_nas_info(api)
+      metrics += get_volume_info(api)
+      metrics += get_disk_info(api)
+      metrics += get_success_info(True)
   except Exception as e:
     print(e)
     metrics += get_success_info(False)
   finally:
     return metrics
+
+if __name__ == '__main__':
+  # Parse arguments
+  parser = argparse.ArgumentParser()
+  parser.add_argument('action', type=str)
+  args, _ = parser.parse_known_args()
+
+  if args.action == 'add':
+    asyncio.run(add_host())
