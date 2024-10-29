@@ -39,6 +39,27 @@ docker exec -it synology-exporter python3 /app/main.py add
 curl "<server_ip>:9102/probe?target=<synology_url>
 ```
 
+## Prometheus configuration
+
+This assumes that both `synology-exporter` and `prometheus` are within the same Docker network
+
+```yaml
+scrape_configs:
+  - job_name: synology
+    metrics_path: /probe
+    scrape_interval: 1m
+    static_configs:
+      - targets:
+          - [YOUR_SYNOLOGY_IP]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: synology-exporter
+```
+
 ## Example output
 
 ```
